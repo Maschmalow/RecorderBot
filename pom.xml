@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>maschmalow</groupId>
+    <artifactId>recorderbot</artifactId>
+    <version>0.1</version>
+
+    <properties>
+        <maven.compiler.source>1.9</maven.compiler.source>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>3.6.0_367</version>
+        </dependency>
+        <dependency>
+            <groupId>net.maschmalow</groupId>
+            <artifactId>recorderlib</artifactId>
+            <scope>system</scope>
+            <systemPath>C:\prog\recorderlib\out\artifacts\recorderlib_jar\recorderlib.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+    </dependencies>
+
+</project>
