@@ -6,23 +6,24 @@
 
     <groupId>maschmalow</groupId>
     <artifactId>recorderbot</artifactId>
+    <packaging>pom</packaging>
     <version>0.1</version>
 
     <properties>
         <maven.compiler.source>1.9</maven.compiler.source>
+        <maven.compiler.target>1.9</maven.compiler.target>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.6.0_367</version>
+            <version>3.8.1_441</version>
         </dependency>
         <dependency>
             <groupId>net.maschmalow</groupId>
             <artifactId>recorderlib</artifactId>
-            <scope>system</scope>
-            <systemPath>C:/prog/recorderlib/out/artifacts/recorderlib_jar/recorderlib.jar</systemPath>
+            <version>0.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -30,5 +31,25 @@
             <version>2.8.2</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>net.maschmalow.RecorderBot</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>spring-plugins-release</id>
+            <url>http://repo.spring.io/plugins-release/</url>
+        </repository>
+    </repositories>
 
 </project>

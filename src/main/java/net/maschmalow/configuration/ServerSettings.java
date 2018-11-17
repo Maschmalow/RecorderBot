@@ -17,11 +17,11 @@ public class ServerSettings {
     private static ServerSettings instance = new ServerSettings();
     private static final String SETTINGS_PATH = "settings.json";
 
-    private String recordingsURL = "C:\\path\\to\\your\\recording\\folder\\";
-    private String recordingsPath = "https://example.net/Discord/recordings";
+    private String recordingsPath = "C:\\path\\to\\your\\recording\\folder\\";
+    private String recordingsURL = "https://example.net/Discord/recordings";
     private String gamePlaying = "!help for help";
     private Map<String, GuildSettings> guildsSettings = new HashMap<>();
-    private String botToken = "<YOUR_BOT_TOKEN_HERE>";
+    private String botToken = "YOUR_BOT_TOKEN_HERE";
 
 
     public static GuildSettings get(Guild g) {
@@ -55,7 +55,8 @@ public class ServerSettings {
     public static void read() {
         if(Files.notExists(Paths.get(SETTINGS_PATH))) {
             write();
-            throw new RuntimeException("Config file did not exist at \"" + SETTINGS_PATH + "\", default one has been created but bot token should be populated.");
+            throw new RuntimeException("Config file did not exist at \"" + Paths.get(SETTINGS_PATH).toAbsolutePath().toString() + "\"\n." +
+                    " A default one has been created, but the bot token should at least be populated.");
         }
 
         try {

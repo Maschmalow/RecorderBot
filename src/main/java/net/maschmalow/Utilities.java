@@ -92,7 +92,7 @@ public class Utilities {
         if(filename == null)
             filename = "untitled_recording";
         else
-            filename = filename.replaceAll("[^\\w\\-. ]", "_").substring(0,128);//sanitize filename
+            filename = filename.replaceAll("[^\\w\\-. ]", "_");//sanitize filename
 
         filename = DateFormat.getDateInstance().format(new Date()) + filename + ".mp3";
 

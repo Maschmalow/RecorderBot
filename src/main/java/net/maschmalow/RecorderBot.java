@@ -24,15 +24,13 @@ public class RecorderBot {
     private RecorderBot() {
 
         ServerSettings.read();
-        ServerSettings.updateGuilds(); //in case we were kicked while offline
-
 
         try {
             RecorderBot.jda = new JDABuilder(AccountType.BOT)
                     .setToken(ServerSettings.getBotToken())
                     .addEventListener(new RecorderEventListener())
-                    .buildBlocking();
-        } catch(LoginException | InterruptedException e) {
+                    .build();
+        } catch(LoginException e) {
             throw new RuntimeException("Could not login", e);
         }
 

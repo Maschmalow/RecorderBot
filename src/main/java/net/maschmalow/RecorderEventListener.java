@@ -83,6 +83,7 @@ public class RecorderEventListener extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent e) {
+        ServerSettings.updateGuilds(); //in case we were kicked while offline
 
         RecorderBot.jda.getPresence().setGame(Game.playing(ServerSettings.getGamePlaying()));
         System.out.format("ONLINE: Connected to %s guilds!\n", e.getJDA().getGuilds().size());
