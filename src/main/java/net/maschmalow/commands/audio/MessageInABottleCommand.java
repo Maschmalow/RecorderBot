@@ -15,8 +15,8 @@ public class MessageInABottleCommand implements Command {
 
     @Override
     public void action(String[] args, GuildMessageReceivedEvent e) {
-        if (args.length < 2)
-            throw new IllegalArgumentException("");
+        if (args.length != 2)
+            throw new IllegalArgumentException("This command require exactly two arguments");
 
         if (e.getGuild().getAudioManager().getConnectedChannel() == null) {
             Utilities.sendMessage(e.getChannel(), "I wasn't recording!");

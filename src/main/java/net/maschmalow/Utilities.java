@@ -4,34 +4,40 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.maschmalow.recorderlib.AudioLib;
-import net.maschmalow.recorderlib.RecorderAudioHandler;
 import net.maschmalow.configuration.ServerSettings;
+import net.maschmalow.recorderlib.AudioLib;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.util.Date;
 
 public class Utilities {
-    
+
     static public TextChannel findTextChannel(String tc, GuildMessageReceivedEvent event) throws IllegalArgumentException {
         if(tc == null)
             return event.getChannel();
 
-        if ( tc.startsWith("#"))
+        if(tc.startsWith("#"))
             tc = tc.substring(1);
-        try{
+        try {
             return event.getGuild().getTextChannelsByName(tc, true).get(0);
         } catch(IndexOutOfBoundsException exception) {
             throw new IllegalArgumentException("Cannot find specified text channel");
         }
     }
 
-    static public int parseUInt(String tc)throws IllegalArgumentException {
+    static public int parseUInt(String tc) throws IllegalArgumentException {
         int num;
         try {
             num = Integer.parseInt(tc);
-        } catch (NumberFormatException ex) {
+        } catch(NumberFormatException ex) {
             throw new IllegalArgumentException("Invalid number entered", ex);
         }
 
-        if (num <= 0) throw new IllegalArgumentException("Number must be strictly greater than 0!");
+        if(num <= 0) throw new IllegalArgumentException("Number must be strictly greater than 0!");
 
         return num;
     }
@@ -47,43 +53,70 @@ public class Utilities {
     public static void leaveVoiceChannel(Guild guild) {
         System.out.format("Leaving voice channel in %s\n", guild.getName());
 
-        if(ServerSettings.get(guild).autoSave)
-            AudioLib.writeToFile(guild, "autosave", null, null);  //write data from voice channel it is leaving
+        //if(ServerSettings.get(guild).autoSave)
+        //    AudioLib. (guild, "autosave", null, null);  //write data from voice channel it is leaving
 
         guild.getAudioManager().closeAudioConnection();
-        AudioLib.killAudioHandlers(guild);
+
+        RecorderBot.guildsAudio.remove(guild).detachFromGuild();
     }
 
-    public static void joinVoiceChannel(VoiceChannel vc) {
-        joinVoiceChannel(vc, false);
-    }
 
     //general purpose function for joining voice channels while warning and handling errors
-    public static void joinVoiceChannel(VoiceChannel vc, boolean warning) {
+    public static void joinVoiceChannel(VoiceChannel vc) {
         System.out.format("Joining '%s' voice channel in %s\n", vc.getName(), vc.getGuild().getName());
 
         //don't join afk channels
         if(vc == vc.getGuild().getAfkChannel()) {
-            if(warning) {
-                TextChannel tc = vc.getGuild().getDefaultChannel();
-                sendMessage(tc, "I don't join afk channels!");
-            }
+            TextChannel tc = vc.getGuild().getDefaultChannel();
+            sendMessage(tc, "I don't join afk channels!");
         }
 
         //attempt to join channel and warn if permission is not available
         try {
             vc.getGuild().getAudioManager().openAudioConnection(vc);
         } catch(Exception e) {
-            if(warning) {
-                TextChannel tc = vc.getGuild().getDefaultChannel();
-                sendMessage(tc, "I don't have permission to join " + vc.getName() + "!");
-                return;
-            }
+            TextChannel tc = vc.getGuild().getDefaultChannel();
+            sendMessage(tc, "I don't have permission to join " + vc.getName() + "!");
+            return;
         }
 
         //initalize the audio reciever listener
-        double volume = ServerSettings.get(vc.getGuild()).volume;
-        vc.getGuild().getAudioManager().setReceivingHandler(new RecorderAudioHandler(volume, vc));
+        RecorderBot.guildsAudio.put(vc.getGuild(), new AudioLib(vc.getGuild()));
 
+    }
+
+    public static void saveToFile(Guild guild, String filename, Integer time) {
+        TextChannel tc = guild.getDefaultChannel();
+
+        if(filename == null)
+            filename = "untitled_recording";
+        else
+            filename = filename.replaceAll("[^\\w\\-. ]", "_").substring(0,128);//sanitize filename
+
+        filename = DateFormat.getDateInstance().format(new Date()) + filename + ".mp3";
+
+        File dest = Paths.get(ServerSettings.getRecordingsPath(), filename).toFile();
+
+
+        try {
+            RecorderBot.guildsAudio.get(guild).flushToOStream(new FileOutputStream(dest), time);
+        } catch(IOException ex) {
+            Utilities.sendMessage(tc, "Error saving file: " + ex.getMessage());
+            return;
+        }
+
+        System.out.format("Saved audio file '%s' from %s on %s of size %f MB\n",
+                dest.getName(), guild.getAudioManager().getConnectedChannel().getName(), guild.getName(), (double) dest.length() / 1024 / 1024);
+
+
+        String waitMessage = "";
+        if(dest.length() < RecorderBot.jda.getSelfUser().getAllowedFileSize()) {
+            waitMessage = "\nIt will also be uploaded to this text channel.";
+            tc.sendFile(dest).queue(null, (Throwable) -> Utilities.sendMessage(tc,
+                    "I don't have permissions to send files in " + tc.getName() + "!"));
+        }
+
+        sendMessage(tc, "New audio clip is available at " + ServerSettings.getRecordingsURL() + dest.getName() + "." + waitMessage);
     }
 }

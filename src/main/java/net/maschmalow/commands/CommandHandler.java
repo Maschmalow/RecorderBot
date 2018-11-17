@@ -13,8 +13,7 @@ import net.maschmalow.commands.settings.*;
 import net.maschmalow.configuration.GuildSettings;
 import net.maschmalow.configuration.ServerSettings;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Map;
 
 public class CommandHandler {
@@ -41,17 +40,17 @@ public class CommandHandler {
 
 
     public static void handleCommand(GuildMessageReceivedEvent event) {
-        CommandContainer cmd = new CommandContainer(event);
         GuildSettings settings = ServerSettings.get(event.getGuild());
 
-        Command command = commands.get(cmd.invoke);
+        String[] args = parseArgs(event);
+        Command command = commands.get(args[0]);
         if(command == null)
-            command = commands.get(settings.aliases.get(cmd.invoke));
+            command = commands.get(settings.aliases.get(args[0]));
         if(command == null)
             return;
 
         try {
-            command.action(cmd.args, cmd.e);
+            command.action(Arrays.copyOfRange(args, 1, args.length), event);
         } catch(IllegalArgumentException e) {
             Utilities.sendMessage(event.getChannel(), e.getMessage()+"\n"+command.usage(settings.prefix));
         }
@@ -64,26 +63,5 @@ public class CommandHandler {
         return cmd.split(" ");
     }
 
-
-    private static class CommandContainer {
-        public final String raw;
-        public final String beheaded;
-        public final String[] splitBeheaded;
-        public final String invoke;
-        public final String[] args;
-        public final GuildMessageReceivedEvent e;
-
-        public CommandContainer(GuildMessageReceivedEvent event) {
-            this.raw = event.getMessage().getContentRaw().toLowerCase();
-            ArrayList<String> split = new ArrayList<>();
-            this.beheaded = raw.substring(1);
-            this.splitBeheaded = beheaded.split(" ");
-            Collections.addAll(split, splitBeheaded);
-            this.invoke = split.get(0);
-            this.args = new String[split.size() - 1];
-            split.subList(1, split.size()).toArray(args);
-            this.e = event;
-        }
-    }
 }
 

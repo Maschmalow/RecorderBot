@@ -23,7 +23,6 @@ public class GuildSettings {
         this.aliases.put("info", "help");
         this.aliases.put("record", "join");
         this.aliases.put("stop", "leave");
-        this.aliases.put("symbol", "prefix");
 
 
         this.autoSave = false;

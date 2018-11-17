@@ -1,23 +1,22 @@
 package net.maschmalow.commands.misc;
 
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.maschmalow.RecorderBot;
+import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 
 
 public class LeaveCommand implements Command {
 
 
-
     @Override
     public void action(String[] args, GuildMessageReceivedEvent e) {
-        if (args.length != 0)
-            throw new IllegalArgumentException("This command takes no argument");
+        if(args.length != 0)
+            Utilities.sendMessage(e.getChannel(), "Warning: this commands takes no argument, the provided ones are ignored.");
 
-        if (!e.getGuild().getAudioManager().isConnected())
+        if(!e.getGuild().getAudioManager().isConnected())
             throw new IllegalArgumentException("I am not in a channel!");
 
-        RecorderBot.leaveVoiceChannel(e.getGuild());
+        Utilities.leaveVoiceChannel(e.getGuild());
 
     }
 
@@ -28,7 +27,7 @@ public class LeaveCommand implements Command {
 
     @Override
     public String description() {
-        return "Force the bot to leave it's current channel";
+        return "Force the bot to leave its current channel.";
     }
 
 

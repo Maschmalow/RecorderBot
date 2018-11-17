@@ -13,7 +13,7 @@ public class AutoLeaveCommand implements Command {
     @Override
     public void action(String[] args, GuildMessageReceivedEvent e) throws IllegalArgumentException{
         if (args.length != 1)
-            throw new IllegalArgumentException("This command requires exactly one arguments");
+            throw new IllegalArgumentException("This command requires exactly one argument");
 
         int num = Utilities.parseUInt(args[0]);
         ServerSettings.get(e.getGuild()).autoLeaveSettings = num;

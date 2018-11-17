@@ -3,7 +3,6 @@ package net.maschmalow.commands.audio;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.maschmalow.Utilities;
-import net.maschmalow.recorderlib.AudioLib;
 import net.maschmalow.commands.Command;
 
 
@@ -25,7 +24,7 @@ public class ClipCommand implements Command {
 
         int time = Utilities.parseUInt(args[0]);
 
-        AudioLib.writeToFile(e.getGuild(), destChannel, time);
+        Utilities.saveToFile(e.getGuild(), e.getAuthor().getName(), time);
 
 
     }

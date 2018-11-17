@@ -1,8 +1,6 @@
 package net.maschmalow.commands.audio;
 
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.maschmalow.RecorderBot;
 import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 
@@ -21,9 +19,9 @@ public class SaveCommand implements Command {
         }
 
 
-        TextChannel savingChannel = Utilities.findTextChannel((args.length == 0) ? null : args[0], e);
+        //TextChannel savingChannel = Utilities.findTextChannel((args.length == 0) ? null : args[0], e);
 
-        RecorderBot.writeToFile(e.getGuild(), savingChannel);
+        Utilities.saveToFile(e.getGuild(),e.getAuthor().getName(),null);
 
     }
 

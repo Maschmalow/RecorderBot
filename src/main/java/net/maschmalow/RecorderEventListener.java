@@ -30,6 +30,9 @@ public class RecorderEventListener extends ListenerAdapter {
     }
 
 
+    /*
+        Whenever somebody joins/leaves, check whether we should change/join voice channels
+     */
     @Override
     public void onGenericGuildVoice(GenericGuildVoiceEvent e) {
         if (e.getMember() == null || e.getMember().getUser() == null || e.getMember().getUser().isBot())

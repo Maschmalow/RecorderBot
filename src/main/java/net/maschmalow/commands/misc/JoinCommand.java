@@ -2,9 +2,8 @@ package net.maschmalow.commands.misc;
 
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.maschmalow.RecorderBot;
+import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
-import net.maschmalow.configuration.ServerSettings;
 
 
 public class JoinCommand implements Command {
@@ -14,7 +13,7 @@ public class JoinCommand implements Command {
     @Override
     public void action(String[] args, GuildMessageReceivedEvent e) {
         if (args.length != 0)
-            throw new IllegalArgumentException("This command takes no argument");
+            Utilities.sendMessage(e.getChannel(), "Warning: this commands takes no argument, the provided ones are ignored.");
 
         if (e.getGuild().getAudioManager().getConnectedChannel() != null &&
                 e.getGuild().getAudioManager().getConnectedChannel().getMembers().contains(e.getMember()))
@@ -26,10 +25,10 @@ public class JoinCommand implements Command {
             throw new IllegalArgumentException("You need to be in a voice channel to use this command!");
 
         //write out previous channel's audio if autoSave is on
-        if (e.getGuild().getAudioManager().isConnected() && ServerSettings.get(e.getGuild()).autoSave)
-            RecorderBot.writeToFile(e.getGuild());
+        //if (e.getGuild().getAudioManager().isConnected() && ServerSettings.get(e.getGuild()).autoSave)
+        //    RecorderBot.writeToFile(e.getGuild());
 
-        RecorderBot.joinVoiceChannel(memberChannel, true);
+        Utilities.joinVoiceChannel(memberChannel);
     }
 
     @Override

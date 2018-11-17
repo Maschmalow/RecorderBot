@@ -1,6 +1,7 @@
 package net.maschmalow.commands.settings;
 
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 import net.maschmalow.commands.CommandHandler;
 import net.maschmalow.configuration.ServerSettings;
@@ -20,7 +21,7 @@ public class AliasCommand implements Command {
             return;
         }
 
-        if (CommandHandler.commands.containsValue(args[1].toLowerCase())) {
+        if (ServerSettings.get(e.getGuild()).aliases.containsKey(args[1].toLowerCase())) {
             Utilities.sendMessage(e.getChannel(), "Alias '" + args[1].toLowerCase() + "' already exists.");
             return;
         }
@@ -38,7 +39,7 @@ public class AliasCommand implements Command {
 
     @Override
     public String description() {
-        return "Creates an alias, or alternate name, to a command for customization.";
+        return "Gives a new name to an existing command.";
     }
 
 

@@ -1,6 +1,7 @@
 package net.maschmalow.commands.settings;
 
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 import net.maschmalow.configuration.ServerSettings;
 
@@ -11,8 +12,6 @@ public class PrefixCommand implements Command {
     public void action(String[] args, GuildMessageReceivedEvent e) throws IllegalArgumentException {
         if (args.length != 1)
             throw new IllegalArgumentException("This command require exactly one argument");
-        if(args[0].length() != 1)
-            throw new IllegalArgumentException("Prefix must be exactly one character");
 
         ServerSettings.get(e.getGuild()).prefix = args[0];
         ServerSettings.write();
@@ -22,7 +21,7 @@ public class PrefixCommand implements Command {
 
     @Override
     public String usage(String prefix) {
-        return prefix + "prefix [character]";
+        return prefix + "prefix [string]";
     }
 
     @Override

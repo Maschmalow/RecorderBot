@@ -22,7 +22,7 @@
             <groupId>net.maschmalow</groupId>
             <artifactId>recorderlib</artifactId>
             <scope>system</scope>
-            <systemPath>C:\prog\recorderlib\out\artifacts\recorderlib_jar\recorderlib.jar</systemPath>
+            <systemPath>C:/prog/recorderlib/out/artifacts/recorderlib_jar/recorderlib.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

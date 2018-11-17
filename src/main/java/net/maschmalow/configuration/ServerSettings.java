@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ServerSettings {
@@ -16,28 +17,25 @@ public class ServerSettings {
     private static ServerSettings instance = new ServerSettings();
     private static final String SETTINGS_PATH = "settings.json";
 
-    private String recordingsURL;
-    private String recordingsPath;
-    private String gamePlaying;
-    private Map<String, net.maschmalow.configuration.GuildSettings> guildsSettings;
-    private String botToken;
+    private String recordingsURL = "C:\\path\\to\\your\\recording\\folder\\";
+    private String recordingsPath = "https://example.net/Discord/recordings";
+    private String gamePlaying = "!help for help";
+    private Map<String, GuildSettings> guildsSettings = new HashMap<>();
+    private String botToken = "<YOUR_BOT_TOKEN_HERE>";
 
-    private ServerSettings() {
-        recordingsPath = "C:\\wamp64\\www\\maschmalow.net\\DiscordFun\\";
-        recordingsURL = "https://maschmalow.net/DiscordFun/";
-        gamePlaying = "!help | maschmalow.net";
-        botToken = "<YOUR_BOT_TOKEN_HERE>"; //it's just to help seeing it in the default conf file
-    }
 
     public static GuildSettings get(Guild g) {
         return instance.guildsSettings.get(g.getId());
     }
 
+    /**
+     * Synchronise guilds in settings files with guild list from jda
+     */
     public static void updateGuilds() {
         boolean update = false; // :(
         for(Guild g : RecorderBot.jda.getGuilds()) {
             if(!instance.guildsSettings.containsKey(g.getId())) {
-                instance.guildsSettings.put(g.getId(), new net.maschmalow.configuration.GuildSettings(g));
+                instance.guildsSettings.put(g.getId(), new GuildSettings(g));
                 update = true;
             }
         }

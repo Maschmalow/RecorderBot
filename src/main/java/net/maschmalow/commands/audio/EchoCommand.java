@@ -1,10 +1,9 @@
 package net.maschmalow.commands.audio;
 
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.maschmalow.RecorderBot;
 import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
-import net.maschmalow.recorderlib.RecorderAudioHandler;
-import net.maschmalow.recorderlib.PCMBufferSender;
 
 
 public class EchoCommand implements Command {
@@ -23,15 +22,7 @@ public class EchoCommand implements Command {
 
         int time = Utilities.parseUInt(args[0]);
 
-        RecorderAudioHandler ah = (RecorderAudioHandler) e.getGuild().getAudioManager().getReceiveHandler();
-        byte[] voiceData;
-        if (ah == null || (voiceData = ah.getUncompVoice(time)) == null) {
-            Utilities.sendMessage(e.getChannel(), "I wasn't recording!");
-            return;
-        }
-
-        PCMBufferSender as = new PCMBufferSender(voiceData);
-        e.getGuild().getAudioManager().setSendingHandler(as);
+        RecorderBot.guildsAudio.get(e.getGuild()).flushToSender(time);
 
     }
 

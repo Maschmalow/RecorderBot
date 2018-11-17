@@ -6,7 +6,9 @@ import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 import net.maschmalow.configuration.ServerSettings;
 
-
+/*
+    Disabled for now
+ */
 public class SaveLocationCommand implements Command {
 
 
@@ -17,7 +19,7 @@ public class SaveLocationCommand implements Command {
 
         TextChannel newDefault = Utilities.findTextChannel((args.length == 0)? null: args[0], e);
 
-        ServerSettings.get(e.getGuild()).defaultTextChannel = newDefault.getId();
+        //ServerSettings.get(e.getGuild()).defaultTextChannel = newDefault.getId();
         ServerSettings.write();
         Utilities.sendMessage(e.getChannel(), "Now defaulting to the " + e.getChannel().getName() + " text channel");
 

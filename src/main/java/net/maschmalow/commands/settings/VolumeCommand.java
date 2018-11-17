@@ -1,6 +1,7 @@
 package net.maschmalow.commands.settings;
 
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 import net.maschmalow.configuration.ServerSettings;
 
@@ -12,12 +13,7 @@ public class VolumeCommand implements Command {
         if(args.length != 1)
             throw new IllegalArgumentException("This command requires exactly one argument");
 
-        int num;
-        try {
-            num = Integer.parseInt(args[0]);
-        } catch(Exception ex) {
-            throw new IllegalArgumentException("Invalid volume entered", ex);
-        }
+        int num = Utilities.parseUInt(args[0]);
 
         if(num < 1 || num > 100)
             throw new IllegalArgumentException("Volume must be between 1 and 100");
@@ -26,7 +22,7 @@ public class VolumeCommand implements Command {
         ServerSettings.get(e.getGuild()).volume = (double) num / 100.0;
         ServerSettings.write();
 
-        Utilities.sendMessage(e.getChannel(), "Volume set to " + num + "% for next recording!");
+        Utilities.sendMessage(e.getChannel(), "Volume set to " + num + "% for next recordings!");
 
 
     }
