@@ -10,6 +10,8 @@ import net.maschmalow.recorderlib.AudioLib;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Date;
@@ -92,9 +94,9 @@ public class Utilities {
         if(filename == null)
             filename = "untitled_recording";
         else
-            filename = filename.replaceAll("[^\\w\\-. ]", "_");//sanitize filename
+            filename = DateFormat.getDateInstance(DateFormat.SHORT).format(new Date()) + filename + ".mp3";
 
-        filename = DateFormat.getDateInstance().format(new Date()) + filename + ".mp3";
+        filename = filename.replaceAll("[^\\w\\-. ]", "_");//sanitize filename
 
         File dest = Paths.get(ServerSettings.getRecordingsPath(), filename).toFile();
 
@@ -117,6 +119,10 @@ public class Utilities {
                     "I don't have permissions to send files in " + tc.getName() + "!"));
         }
 
-        sendMessage(tc, "New audio clip is available at " + ServerSettings.getRecordingsURL() + dest.getName() + "." + waitMessage);
+        try {
+            sendMessage(tc, "New audio clip is available at " + ServerSettings.getRecordingsURL() + URLEncoder.encode(dest.getName(),"UTF-8") + "." + waitMessage);
+        } catch(UnsupportedEncodingException e) {
+            return;
+        }
     }
 }

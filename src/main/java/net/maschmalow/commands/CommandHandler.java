@@ -45,14 +45,14 @@ public class CommandHandler {
         String[] args = parseArgs(event);
         Command command = commands.get(args[0]);
         if(command == null)
-            command = commands.get(settings.aliases.get(args[0]));
+            command = commands.getOrDefault(settings.aliases.get(args[0]), null);
         if(command == null)
             return;
 
         try {
             command.action(Arrays.copyOfRange(args, 1, args.length), event);
         } catch(IllegalArgumentException e) {
-            Utilities.sendMessage(event.getChannel(), e.getMessage()+"\n"+command.usage(settings.prefix));
+            Utilities.sendMessage(event.getChannel(), e.getMessage()+"\nUsage: "+command.usage(settings.prefix));
         }
 
     }

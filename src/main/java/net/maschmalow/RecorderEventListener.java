@@ -51,7 +51,7 @@ public class RecorderEventListener extends ListenerAdapter {
             }
         }
 
-        if(toJoin != null && toJoin != currentChannel) {
+        if(toJoin != null && toJoin != currentChannel && toJoin == e.getGuild().getAfkChannel()) {
             Utilities.joinVoiceChannel(toJoin);
         } else if(currentChannel != null && voiceChannelSize(currentChannel) <= settings.autoLeaveSettings) {
             Utilities.leaveVoiceChannel(e.getGuild());
