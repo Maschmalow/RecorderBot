@@ -22,7 +22,7 @@ public class HelpCommand implements Command {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setAuthor("RecorderBot", "https://github.com/Maschmalow/recorderbot", e.getJDA().getSelfUser().getAvatarUrl());
         embed.setColor(Color.RED);
-        embed.setTitle("This is experimental software.");
+        embed.setTitle("RecorderBot - Warning, this is experimental software.");
         embed.setDescription("Stripped down & reworked version of \'Throw Voice\', by Maschmalow.\n" +
                 "See https://github.com/guacamoledragon/throw-voice");
         embed.setThumbnail("http://www.freeiconspng.com/uploads/information-icon-5.png");

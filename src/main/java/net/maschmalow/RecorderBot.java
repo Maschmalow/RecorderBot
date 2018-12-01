@@ -34,6 +34,10 @@ public class RecorderBot {
             throw new RuntimeException("Could not login", e);
         }
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            RecorderBot.jda.shutdownNow();
+            System.out.format("Successfully shutdown.\n");
+        }));
     }
 
 

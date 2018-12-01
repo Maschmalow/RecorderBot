@@ -72,7 +72,7 @@ public class MessageInABottleCommand implements Command {
 
     @Override
     public String description() {
-        return "Echos back the input number of seconds of the recording into the voice channel specified and then rejoins original channel (max 120 seconds)";
+        return "Echos back the input number of seconds of the recording into the voice channel specified and then rejoins original channel ";
     }
 
 
