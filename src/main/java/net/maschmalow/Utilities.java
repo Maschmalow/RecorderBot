@@ -48,7 +48,7 @@ public class Utilities {
     //general purpose function that sends a message to the given text channel and handles errors
     public static void sendMessage(TextChannel tc, String message) {
         tc.sendMessage("\u200B" + message).queue(null,
-                (Throwable) -> tc.getGuild().getDefaultChannel().sendMessage("\u200BI don't have permissions to send messages in " + tc.getName() + "!").queue());
+                (Throwable) -> Utilities.getTextChannel(tc.getGuild()).sendMessage("\u200BI don't have permissions to send messages in " + tc.getName() + "!").queue());
     }
 
     //general purpose function for leaving voice channels
@@ -69,8 +69,9 @@ public class Utilities {
         System.out.format("Joining '%s' voice channel in %s\n", vc.getName(), vc.getGuild().getName());
 
         //don't join afk channels
+
+        TextChannel tc = Utilities.getTextChannel(vc.getGuild());
         if(vc == vc.getGuild().getAfkChannel()) {
-            TextChannel tc = vc.getGuild().getDefaultChannel();
             sendMessage(tc, "I don't join afk channels!");
         }
 
@@ -78,24 +79,22 @@ public class Utilities {
         try {
             vc.getGuild().getAudioManager().openAudioConnection(vc);
         } catch(Exception e) {
-            TextChannel tc = vc.getGuild().getDefaultChannel();
             sendMessage(tc, "I don't have permission to join " + vc.getName() + "!");
             return;
         }
 
-        //initalize the audio reciever listener
+        //initalize the audio receiver listener
         RecorderBot.guildsAudio.put(vc.getGuild(), new AudioLib(vc.getGuild()));
 
     }
 
     public static void saveToFile(Guild guild, String filename, Integer time) {
-        TextChannel tc = guild.getDefaultChannel();
+        TextChannel tc = Utilities.getTextChannel(guild);
 
         if(filename == null)
             filename = "untitled_recording";
-        else
-            filename = DateFormat.getDateInstance(DateFormat.SHORT).format(new Date()) + filename + ".mp3";
 
+        filename = DateFormat.getDateInstance(DateFormat.SHORT).format(new Date()) + filename + ".mp3";
         filename = filename.replaceAll("[^\\w\\-. ]", "_");//sanitize filename
 
         File dest = Paths.get(ServerSettings.getRecordingsPath(), filename).toFile();
@@ -124,5 +123,10 @@ public class Utilities {
         } catch(UnsupportedEncodingException e) {
             return;
         }
+    }
+
+
+    public static TextChannel getTextChannel(Guild guild) {
+        return guild.getSystemChannel(); //to be improved
     }
 }
