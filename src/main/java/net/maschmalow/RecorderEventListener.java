@@ -1,13 +1,14 @@
 package net.maschmalow;
 
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.core.events.guild.voice.GenericGuildVoiceEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.maschmalow.commands.CommandHandler;
 import net.maschmalow.configuration.GuildSettings;
 import net.maschmalow.configuration.ServerSettings;
@@ -85,7 +86,7 @@ public class RecorderEventListener extends ListenerAdapter {
     public void onReady(ReadyEvent e) {
         ServerSettings.updateGuilds(); //in case we were kicked while offline
 
-        RecorderBot.jda.getPresence().setGame(Game.playing(ServerSettings.getGamePlaying()));
+        RecorderBot.jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.playing(ServerSettings.getGamePlaying()));
         System.out.format("ONLINE: Connected to %s guilds!\n", e.getJDA().getGuilds().size());
 
     }

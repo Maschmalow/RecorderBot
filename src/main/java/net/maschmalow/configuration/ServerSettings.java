@@ -1,7 +1,7 @@
 package net.maschmalow.configuration;
 
 import com.google.gson.Gson;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 import net.maschmalow.RecorderBot;
 
 import java.io.FileReader;

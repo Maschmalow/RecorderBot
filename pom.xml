@@ -19,7 +19,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.3_463</version>
+            <version>4.2.0_168</version>
         </dependency>
         <dependency>
             <groupId>net.maschmalow</groupId>
@@ -63,6 +63,11 @@
         <repository>
             <id>spring-plugins-release</id>
             <url>http://repo.spring.io/plugins-release/</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>https://jcenter.bintray.com</url>
         </repository>
     </repositories>
 

@@ -1,9 +1,9 @@
 package net.maschmalow;
 
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.maschmalow.configuration.ServerSettings;
 import net.maschmalow.recorderlib.AudioLib;
 
@@ -26,9 +26,11 @@ public class RecorderBot {
         ServerSettings.read();
 
         try {
-            RecorderBot.jda = new JDABuilder(AccountType.BOT)
-                    .setToken(ServerSettings.getBotToken())
-                    .addEventListener(new RecorderEventListener())
+            RecorderBot.jda = JDABuilder.create(ServerSettings.getBotToken(),
+                        GatewayIntent.GUILD_VOICE_STATES,
+                        GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.GUILD_MESSAGES)
+                    .addEventListeners(new RecorderEventListener())
                     .build();
         } catch(LoginException e) {
             throw new RuntimeException("Could not login", e);

@@ -1,7 +1,7 @@
 package net.maschmalow.commands.settings;
 
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 import net.maschmalow.configuration.ServerSettings;

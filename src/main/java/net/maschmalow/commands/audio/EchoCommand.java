@@ -1,6 +1,6 @@
 package net.maschmalow.commands.audio;
 
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.maschmalow.RecorderBot;
 import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;

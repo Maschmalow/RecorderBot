@@ -1,7 +1,7 @@
 package net.maschmalow.commands.misc;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.maschmalow.Utilities;
 import net.maschmalow.commands.Command;
 import net.maschmalow.commands.CommandHandler;
