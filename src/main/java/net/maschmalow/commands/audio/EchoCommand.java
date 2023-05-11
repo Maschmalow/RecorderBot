@@ -1,40 +1,38 @@
 package net.maschmalow.commands.audio;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.maschmalow.RecorderBot;
-import net.maschmalow.Utilities;
-import net.maschmalow.commands.Command;
+import net.maschmalow.commands.SlashCommandBase;
+import net.maschmalow.recorderlib.AudioLib;
+
+import java.util.concurrent.TimeUnit;
 
 
-public class EchoCommand implements Command {
-
-
+public class EchoCommand extends SlashCommandBase {
 
     @Override
-    public void action(String[] args, GuildMessageReceivedEvent e) {
-        if (args.length != 1)
-            throw new IllegalArgumentException("This command require exactly one argument");
+    public CommandData getCommandData() {
+        return Commands.slash("echo","Echos back the input number of seconds of the recording into the voice channel")
+                .setGuildOnly(true)
+                .addOptions(new OptionData(OptionType.INTEGER, "seconds", "The length of the clip in seconds.")
+                        .setRequired(true)
+                        .setMinValue(1)
+                        .setMaxValue(AudioLib.AUDIOBUF_MAXSIZE*1024*1024/AudioLib.BYTES_PER_SEC-1));
+    }
 
+    @Override
+    public void onInteraction(SlashCommandInteractionEvent e) {
         if (e.getGuild().getAudioManager().getConnectedChannel() == null) {
-            Utilities.sendMessage(e.getChannel(), "I wasn't recording!");
+            e.reply("I wasn't recording!").queue();
             return;
         }
 
-        int time = Utilities.parseUInt(args[0]);
 
-        RecorderBot.guildsAudio.get(e.getGuild()).flushToSender(time);
-
+        e.reply("Echoing...").queue((msg)->msg.deleteOriginal().queueAfter(1, TimeUnit.SECONDS));
+        RecorderBot.guildsAudio.get(e.getGuild()).flushToSender(Math.toIntExact(e.getOption("seconds").getAsLong()));
     }
-
-    @Override
-    public String usage(String prefix) {
-        return prefix + "echo [seconds]";
-    }
-
-    @Override
-    public String description() {
-        return "Echos back the input number of seconds of the recording into the voice channel";
-    }
-
-
 }

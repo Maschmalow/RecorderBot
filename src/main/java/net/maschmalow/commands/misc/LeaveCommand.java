@@ -1,34 +1,33 @@
 package net.maschmalow.commands.misc;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.maschmalow.Utilities;
-import net.maschmalow.commands.Command;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.maschmalow.RecorderBot;
+import net.maschmalow.commands.SlashCommandBase;
 
 
-public class LeaveCommand implements Command {
+public class LeaveCommand extends SlashCommandBase {
 
 
     @Override
-    public void action(String[] args, GuildMessageReceivedEvent e) {
-        if(args.length != 0)
-            Utilities.sendMessage(e.getChannel(), "Warning: this commands takes no argument, the provided ones are ignored.");
-
-        if(!e.getGuild().getAudioManager().isConnected())
-            throw new IllegalArgumentException("I am not in a channel!");
-
-        Utilities.leaveVoiceChannel(e.getGuild());
-
+    public CommandData getCommandData() {
+        return Commands.slash("leave","Force the bot to leave its current channel.")
+                .setGuildOnly(true);
     }
 
     @Override
-    public String usage(String prefix) {
-        return prefix + "leave";
+    public void onInteraction(SlashCommandInteractionEvent e) {
+        e.reply("Bye").queue((msg) -> msg.deleteOriginal().queue());
+
+        RecorderBot.LOG.info("Leaving voice channel in "+e.getGuild().getName() );
+
+        leaveAudio(e.getGuild());
     }
 
-    @Override
-    public String description() {
-        return "Force the bot to leave its current channel.";
+    public static void leaveAudio(Guild guild) {
+        guild.getAudioManager().closeAudioConnection();
+        RecorderBot.guildsAudio.remove(guild).detachFromGuild();
     }
-
-
 }

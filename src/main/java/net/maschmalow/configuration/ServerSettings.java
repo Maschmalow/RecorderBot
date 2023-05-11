@@ -11,12 +11,24 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ServerSettings {
 
     private static ServerSettings instance = new ServerSettings();
     private static final String SETTINGS_PATH = "settings.json";
 
+    /*
+     * DO NOT set the settings fields as final, unless you want to set you up for a terrible debugging session.
+     * Gson will populate them using field reflection.
+     * Field.set() documentation :
+     * "Setting a final field in this way is meaningful only during deserialization or reconstruction of instances of
+     *  classes with blank final fields, before they are made available for access by other parts of a program. Use
+     * in any other context may have unpredictable effects, including cases in which other parts of a program continue
+     * to use the original value of this field."
+     * This behavior appeared suddenly, despite having exactly the same code running fine for years and still working
+     * in other copy of this program. Note that "other parts of a program" also include the debugger.
+     */
     private String recordingsPath = "C:\\path\\to\\your\\recording\\folder\\";
     private String recordingsURL = "https://example.net/Discord/recordings";
     private String gamePlaying = "!help for help";
@@ -26,6 +38,10 @@ public class ServerSettings {
 
     public static GuildSettings get(Guild g) {
         return instance.guildsSettings.get(g.getId());
+    }
+
+    public static Set<String> guilds() {
+        return instance.guildsSettings.keySet();
     }
 
     /**
@@ -55,7 +71,7 @@ public class ServerSettings {
     public static void read() {
         if(Files.notExists(Paths.get(SETTINGS_PATH))) {
             write();
-            throw new RuntimeException("Config file did not exist at \"" + Paths.get(SETTINGS_PATH).toAbsolutePath().toString() + "\"\n." +
+            throw new RuntimeException("Config file did not exist at \"" + Paths.get(SETTINGS_PATH).toAbsolutePath() + "\"\n." +
                     " A default one has been created, but the bot token should at least be populated.");
         }
 

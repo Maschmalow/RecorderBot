@@ -4,16 +4,20 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.maschmalow.commands.SlashCommandsManager;
 import net.maschmalow.configuration.ServerSettings;
 import net.maschmalow.recorderlib.AudioLib;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.security.auth.login.LoginException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RecorderBot {
 
     public static JDA jda;
+    public static Logger LOG = LoggerFactory.getLogger(RecorderBot.class);
     public static Map<Guild, AudioLib> guildsAudio = new HashMap<>();
 
 
@@ -25,21 +29,16 @@ public class RecorderBot {
 
         ServerSettings.read();
 
-        try {
-            RecorderBot.jda = JDABuilder.create(ServerSettings.getBotToken(),
+
+        RecorderBot.jda = JDABuilder.create(ServerSettings.getBotToken(),
                         GatewayIntent.GUILD_VOICE_STATES,
                         GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.GUILD_MEMBERS, // must be enabled in the developer portal
                         GatewayIntent.GUILD_MESSAGES)
-                    .addEventListeners(new RecorderEventListener())
-                    .build();
-        } catch(LoginException e) {
-            throw new RuntimeException("Could not login", e);
-        }
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .addEventListeners(new RecorderEventListener(), SlashCommandsManager.makeCommandsManager())
+                .build();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            RecorderBot.jda.shutdownNow();
-            System.out.format("Successfully shutdown.\n");
-        }));
     }
 
 

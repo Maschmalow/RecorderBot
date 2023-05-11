@@ -2,14 +2,17 @@ package net.maschmalow;
 
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.AudioChannel;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GenericGuildVoiceEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.maschmalow.commands.CommandHandler;
+import net.maschmalow.commands.misc.JoinCommand;
+import net.maschmalow.commands.misc.LeaveCommand;
 import net.maschmalow.configuration.GuildSettings;
 import net.maschmalow.configuration.ServerSettings;
 
@@ -21,13 +24,13 @@ public class RecorderEventListener extends ListenerAdapter {
     @Override
     public void onGuildJoin(GuildJoinEvent e) {
         ServerSettings.updateGuilds();
-        System.out.format("Joined new server '%s', connected to %s guilds\n", e.getGuild().getName(), e.getJDA().getGuilds().size());
+        RecorderBot.LOG.info("Joined server "+e.getGuild().getName()+", connected to "+e.getJDA().getGuilds().size()+" guilds" );
     }
 
     @Override
     public void onGuildLeave(GuildLeaveEvent e) {
         ServerSettings.updateGuilds();
-        System.out.format("Left server '%s', connected to %s guilds\n", e.getGuild().getName(), e.getJDA().getGuilds().size());
+        RecorderBot.LOG.info("Left server "+e.getGuild().getName()+", connected to "+e.getJDA().getGuilds().size()+" guilds" );
     }
 
 
@@ -35,15 +38,17 @@ public class RecorderEventListener extends ListenerAdapter {
         Whenever somebody joins/leaves, check whether we should change/join voice channels
      */
     @Override
-    public void onGenericGuildVoice(GenericGuildVoiceEvent e) {
+    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent e) {
         if (e.getMember() == null || e.getMember().getUser() == null || e.getMember().getUser().isBot())
             return;
-        GuildSettings settings = ServerSettings.get(e.getGuild());
-        VoiceChannel currentChannel = e.getGuild().getAudioManager().getConnectedChannel();
+
+        Guild guild = e.getGuild();
+        GuildSettings settings = ServerSettings.get(guild);
+        AudioChannelUnion currentChannel = guild.getAudioManager().getConnectedChannel();
 
         long largestSize = 0;
         VoiceChannel toJoin = null;
-        List<VoiceChannel> vcs = e.getGuild().getVoiceChannels();
+        List<VoiceChannel> vcs = guild.getVoiceChannels();
         for(VoiceChannel v : vcs) {
             long curChannelSize = voiceChannelSize(v);
             if(curChannelSize > largestSize && curChannelSize >= settings.autoJoinSettings) {
@@ -52,33 +57,22 @@ public class RecorderEventListener extends ListenerAdapter {
             }
         }
 
-        if(toJoin != null && toJoin != currentChannel && toJoin != e.getGuild().getAfkChannel()) {
-            Utilities.joinVoiceChannel(toJoin);
+        if(toJoin != null && toJoin != currentChannel && toJoin != guild.getAfkChannel()) {
+            JoinCommand.joinAudio(guild, toJoin);
+
         } else if(currentChannel != null && voiceChannelSize(currentChannel) <= settings.autoLeaveSettings) {
-            Utilities.leaveVoiceChannel(e.getGuild());
+            LeaveCommand.leaveAudio(guild);
         }
 
     }
 
     //returns the effective size of the voice channel (bots don't count)
-    private static long voiceChannelSize(VoiceChannel vc) {
+    private static long voiceChannelSize(AudioChannel vc) {
         if(vc == null) return 0;
 
         return vc.getMembers().stream()
                 .filter((member -> !member.getUser().isBot()))
                 .count();
-    }
-
-    @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        if (event.getMember() == null || event.getMember().getUser() == null || event.getMember().getUser().isBot())
-            return;
-
-        String prefix = ServerSettings.get(event.getGuild()).prefix;
-
-        if (event.getMessage().getContentRaw().startsWith(prefix)) {
-            CommandHandler.handleCommand(event);
-        }
     }
 
 
@@ -87,7 +81,7 @@ public class RecorderEventListener extends ListenerAdapter {
         ServerSettings.updateGuilds(); //in case we were kicked while offline
 
         RecorderBot.jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.playing(ServerSettings.getGamePlaying()));
-        System.out.format("ONLINE: Connected to %s guilds!\n", e.getJDA().getGuilds().size());
+        RecorderBot.LOG.info("ONLINE: Connected to {} guilds!\n", e.getJDA().getGuilds().size());
 
     }
 }
