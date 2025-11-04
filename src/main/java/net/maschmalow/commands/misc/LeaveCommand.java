@@ -2,6 +2,7 @@ package net.maschmalow.commands.misc;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.maschmalow.RecorderBot;
@@ -14,7 +15,7 @@ public class LeaveCommand extends SlashCommandBase {
     @Override
     public CommandData getCommandData() {
         return Commands.slash("leave","Force the bot to leave its current channel.")
-                .setGuildOnly(true);
+                .setContexts(InteractionContextType.GUILD);
     }
 
     @Override

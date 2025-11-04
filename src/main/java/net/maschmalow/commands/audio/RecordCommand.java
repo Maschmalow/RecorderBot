@@ -1,6 +1,7 @@
 package net.maschmalow.commands.audio;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -20,7 +21,7 @@ public class RecordCommand extends SlashCommandBase {
     @Override
     public CommandData getCommandData() {
         return Commands.slash("record","Records for a specified amount of time ")
-                .setGuildOnly(true)
+                .setContexts(InteractionContextType.GUILD)
                 .addOptions(new OptionData(OptionType.INTEGER, "seconds", "The duration to record.")
                         .setRequired(true)
                         .setMinValue(1)

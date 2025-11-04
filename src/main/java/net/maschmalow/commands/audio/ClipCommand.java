@@ -3,6 +3,7 @@ package net.maschmalow.commands.audio;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -29,7 +30,7 @@ public class ClipCommand extends SlashCommandBase {
     @Override
     public CommandData getCommandData() {
         return Commands.slash("clip", "Saves a clip of the specified length.")
-                .setGuildOnly(true)
+                .setContexts(InteractionContextType.GUILD)
                 .addOptions(new OptionData(OptionType.INTEGER, "seconds", "The length of the clip in seconds.")
                         .setRequired(true)
                         .setMinValue(1)

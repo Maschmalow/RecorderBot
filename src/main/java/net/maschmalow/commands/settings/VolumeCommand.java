@@ -1,6 +1,7 @@
 package net.maschmalow.commands.settings;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -22,7 +23,7 @@ public class VolumeCommand extends SlashCommandBase {
                         .setMinValue(1)
                         .setMaxValue(100)
                         .setRequired(true))
-                .setGuildOnly(true);
+                .setContexts(InteractionContextType.GUILD);
     }
 
     @Override

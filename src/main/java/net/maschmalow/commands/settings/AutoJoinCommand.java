@@ -1,6 +1,7 @@
 package net.maschmalow.commands.settings;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -14,7 +15,7 @@ public class AutoJoinCommand  extends SlashCommandBase {
     @Override
     public CommandData getCommandData() {
         return Commands.slash("autojoin","Sets the number of users for the bot to auto-join a voice channel. Set to 0 to disable entirely.")
-                .setGuildOnly(true)
+                .setContexts(InteractionContextType.GUILD)
                 .addOptions(new OptionData(OptionType.INTEGER, "user-count", "The number of users to auto-join.")
                         .setRequired(true)
                         .setMinValue(0));

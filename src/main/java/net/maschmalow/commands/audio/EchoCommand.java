@@ -1,6 +1,7 @@
 package net.maschmalow.commands.audio;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -17,7 +18,7 @@ public class EchoCommand extends SlashCommandBase {
     @Override
     public CommandData getCommandData() {
         return Commands.slash("echo","Echos back the input number of seconds of the recording into the voice channel")
-                .setGuildOnly(true)
+                .setContexts(InteractionContextType.GUILD)
                 .addOptions(new OptionData(OptionType.INTEGER, "seconds", "The length of the clip in seconds.")
                         .setRequired(true)
                         .setMinValue(1)
